@@ -34,7 +34,7 @@ def getPHOutlierScores_multiDim(point_cloud,topological_radius,max_dim_ripser):
 		point_cloud_minus_point = np.delete(point_cloud,point_index,axis=0)
 
 		kd_tree = KDTree(point_cloud_minus_point)
-		indices = kd_tree.query_ball_point(point, r=0.2)
+		indices = kd_tree.query_ball_point(point, r=topological_radius)
 
 		number_of_neighbours = len(indices)
 
@@ -79,7 +79,7 @@ def getPHOutlierScores_restrictedDim(point_cloud,topological_radius,dimension):
 		point_cloud_minus_point = np.delete(point_cloud,point_index,axis=0)
 
 		kd_tree = KDTree(point_cloud_minus_point)
-		indices = kd_tree.query_ball_point(point, r=0.2)
+		indices = kd_tree.query_ball_point(point, r=topological_radius)
 
 		number_of_neighbours = len(indices)
 
