@@ -1,7 +1,6 @@
 ##############################################################
 ###### This code defines the PH landmark selection function and all its help functions
-###### Input:
-###### Output:
+
 
 import numpy as np
 from ripser import ripser
@@ -159,4 +158,4 @@ def getPHLandmarks(point_cloud, topological_radius, sampling_density, scoring_ve
 		PH_landmarks = point_cloud[sorted_indices_point_cloud_original_order[range(number_of_PH_landmarks)],:]
 
 
-	return PH_landmarks, sorted_indices_point_cloud_original_order
+	return PH_landmarks, sorted_indices_point_cloud_original_order, number_of_super_outliers
