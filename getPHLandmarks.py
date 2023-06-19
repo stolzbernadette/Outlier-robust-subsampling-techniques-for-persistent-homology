@@ -21,7 +21,7 @@ def getMaxPersistence(ripser_pd):
 
 def getPHOutlierScores_multiDim(point_cloud,topological_radius,max_dim_ripser):
 
-	set_of_super_outliers = np.empty((0,3))
+	set_of_super_outliers = np.empty((0,point_cloud.shape[1]))
 	super_outlier_indices = np.empty((0,0), int)
 	outlier_scores_point_cloud_original_order = np.empty((0,0))
 
@@ -66,7 +66,7 @@ def getPHOutlierScores_multiDim(point_cloud,topological_radius,max_dim_ripser):
 
 def getPHOutlierScores_restrictedDim(point_cloud,topological_radius,dimension):
 
-	set_of_super_outliers = np.empty((0,3))
+	set_of_super_outliers = np.empty((0,point_cloud.shape[1]))
 	super_outlier_indices = np.empty((0,0), int)
 	outlier_scores_point_cloud_original_order = np.empty((0,0))
 
