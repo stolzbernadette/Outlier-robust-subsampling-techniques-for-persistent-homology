@@ -74,4 +74,4 @@ Examples for calling the function:
  </ul>
 
 <h3> References </h3>
-<a name="GA">[1]</a> Outlier-robust subsampling techniques for persistent homology. BJ Stolz, arXiv: 2103.14743, 2021.
+<a name="GA">[1]</a> Outlier-robust subsampling techniques for persistent homology. BJ Stolz, Journal of Machine Learning Research, 24(90):1–35, 2023.
