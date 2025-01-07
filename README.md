@@ -32,7 +32,8 @@ sampler = LandmarkSampler(
     scoring_version='restricted' or 'multi',
     landmark_type='representative' or 'vital',
     ignore_super_outliers=True,
-    n_workers=n_workers
+    n_workers=n_workers,
+    disable_cache=True
 )
 landmark_idxs, n_super_outlier_landmarks = sampler.compute_landmarks()
 ray.shutdown()
@@ -47,7 +48,8 @@ ray.shutdown()
 - **scoring_version**: `'restricted'` (scores from a single dimension) or `'multi'` (max scores across multiple dimensions).  
 - **landmark_type**: `'representative'` (low scores) or `'vital'` (high scores) chosen first.  
 - **ignore_super_outliers**: If `True`, points with fewer than two neighbors aren’t emphasized.  
-- **n_workers**: Number of Ray workers. Recommended ~80% of the available CPU cores. Should equal the number of cpus in `ray.init`
+- **n_workers**: Number of Ray workers. Recommended ~80% of the available CPU cores. Should equal the number of cpus in `ray.init`.
+- **disable_cache**: If `False`, previously generated scores are loaded if if reusable, and if more points were generated they are saved.  
 
 ### Outputs
 
