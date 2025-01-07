@@ -9,10 +9,10 @@
 ## Description
 This repository contains Python code for the manuscript “[Outlier-robust subsampling techniques for persistent homology](https://arxiv.org/pdf/2103.14743.pdf).” The script `ph_landmarks.py` implements a landmark selection method, using Ray for parallelization, that iteratively:
 
-1. Computes local outlier (topological) scores for active points. 
+1. Computes local outlier (topological) scores for all points in the cloud. 
 2. Selects one landmark at a time.  
 3. Re-scores neighbors of that landmark.  
-4. Repeats until the desired number of landmarks is chosen.
+4. Repeats 2 and 3 until the desired number of landmarks is chosen.
 
 Landmark Sampling offers a balanced alternative to random and maxmin sampling, where the former tends to ignore all outliers, and the latter selects them overly. In contrast, Landmark Sampling considers the local structure of the point cloud and selects points that are either `vital` to preserving its topology or `representative` of their neighborhood.
 
