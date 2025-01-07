@@ -1,77 +1,71 @@
-# Outlier-robust subsampling techniques for persistent homology
+# Landmark Sampling: outlier-robust subsampling techniques for persistent homology
 
-<h3> Project founder: </h3> Bernadette J. Stolz (for more information, see <a href="https://www.maths.ox.ac.uk/people/bernadette.stolz"> here</a>.)
-  
-<h3> Description </h3>
-  
-This repository was created for Python code used in the manuscript <a href="#GA">[1]</a>.
-The manuscript can be found <a href="https://arxiv.org/pdf/2103.14743.pdf"> here</a>. 
+**Project founder:**  
+[Bernadette J. Stolz](https://www.maths.ox.ac.uk/people/bernadette.stolz)
 
-<h3> Python code </h3>
+**Implementation:**  
+[Błażej Banaszewski](https://github.com/blazejba)
 
-The python function to select landmarks is: getPHLandmarks.py
+## Description
+This repository contains Python code for the manuscript “[Outlier-robust subsampling techniques for persistent homology](https://arxiv.org/pdf/2103.14743.pdf).” The script `ph_landmarks.py` implements a landmark selection method, using Ray for parallelization, that iteratively:
 
-<ul>
+1. Computes local outlier (topological) scores for active points. 
+2. Selects one landmark at a time.  
+3. Re-scores neighbors of that landmark.  
+4. Repeats until the desired number of landmarks is chosen.
 
-<p>
-<li>
-Input: 
-<ul>
+Landmark Sampling offers a balanced alternative to random and maxmin sampling, where the former tends to ignore all outliers, and the latter selects them overly. In contrast, Landmark Sampling considers the local structure of the point cloud and selects points that are either `vital` to preserving its topology or `representative` of their neighborhood.
 
-<p>
-<li> point_cloud: array-like structure of the form (N,d), where N is the number of points in R^d.
+This is an efficient implementation that scales to high-dimensional datasets and large point clouds. For example, it was tested on subsampling 500,000 points in 128 dimensions down to 100,000 points. The sampling process took negligible time compared to running Ripser on the subsampled points.
 
-<p>
-<li> topological_radius: neighbourhood radius in which local persistent homology computations are performed around each point.
+## Usage
 
-<p>
-<li> sampling_density: fraction of landmark points from point_cloud.
+```python
+from ph_landmarks import LandmarkSampler
 
-<p>
-<li> scoring_version: can take values 'restrictedDim' (restriction of landmark score computation to specific dimension) or 'multiDim' (when considering the maximal persistence over multiple dimensions for landmark scores).
+ray.init(num_cpus=n_workers, ignore_reinit_error=True)
+sampler = LandmarkSampler(
+    point_cloud=...,
+    n_samples=...,
+    topological_radius=...,
+    dimension=...,
+    scoring_version='restricted' or 'multi',
+    landmark_type='representative' or 'vital',
+    ignore_super_outliers=True,
+    n_workers=n_workers
+)
+landmark_idxs, n_super_outlier_landmarks = sampler.compute_landmarks()
+ray.shutdown()
+```
 
-<p>
-<li> dimension: for 'restrictedDim' this value specifies the persistent homology dimension that is computed to determine the landmark scores, for 'multiDim' this value represents the maximal persistent homology dimension that is computed and considered for the landmark scores.
+### Arguments
 
+- **point_cloud**: `(N, d)` array of data points where `N` is the number of points and `d` is the dimension.  
+- **n_samples**: Number of landmarks to select.  
+- **topological_radius**: Neighborhood radius for local persistent homology.  
+- **dimension**: Maximum homology dimension to use when scoring points.  
+- **scoring_version**: `'restricted'` (scores from a single dimension) or `'multi'` (max scores across multiple dimensions).  
+- **landmark_type**: `'representative'` (low scores) or `'vital'` (high scores) chosen first.  
+- **ignore_super_outliers**: If `True`, points with fewer than two neighbors aren’t emphasized.  
+- **n_workers**: Number of Ray workers. Recommended ~80% of the available CPU cores. Should equal the number of cpus in `ray.init`
 
-<p>
-<li> landmark_type: can take values 'representative' (points with low landmark scores are selected as landmarks) or 'vital' (points with high landmark scores are selected as landmarks).
+### Outputs
 
-</ul>
+- **landmark_idxs**: Indices of selected landmark points in the original point cloud.  
+- **n_super_outlier_landmarks**: Count of points with fewer than two neighbors in their local neighborhood (super outliers).
 
-<p>
-<li>
-Output: 
-  
-  <ul>
-<p>
-<li> PH_landmarks: array-like structure of the form (m,d) containing coordinates of landmark points.
+## Installation
+```
+# Create an environement
+mamba create -n landmark_sampling
+mamba activate landmark_sampling
 
-<p>
-<li> sorted_indices_point_cloud_original_order: row indices of landmark points in point_cloud.
-  
-<p>
-<li> number_of_super_outliers: number of points with less than two neighbours in their local neighbourhood.
-  
+# Install dependencies
+mamba install -c conda-forge --file requirements.txt
 
+# Install the package
+pip install -e . 
+```
 
-</ul>
-
-  
-</ul>
-
-All other functions necessary can be found in the same file.
-
-Examples for calling the function:
-<ul>
-
-<p>
-<li> PH_landmarks, sorted_indices_point_cloud_original_order, number_of_super_outliers = getPHLandmarks(point_cloud, topological_radius, sampling_density, 'multiDim', max_dim_ripser, 'representative')
-  
-<p>
-<li> PH_landmarks, sorted_indices_point_cloud_original_order, number_of_super_outliers = getPHLandmarks(point_cloud, topological_radius, sampling_density, 'restrictedDim', max_dim_ripser, 'vital')
-  
- </ul>
-
-<h3> References </h3>
-<a name="GA">[1]</a> Outlier-robust subsampling techniques for persistent homology. BJ Stolz, Journal of Machine Learning Research, 24(90):1–35, 2023.
+## Reference
+[1] B.J. Stolz, *Outlier-robust subsampling techniques for persistent homology*, arXiv:2103.14743, 2021.
