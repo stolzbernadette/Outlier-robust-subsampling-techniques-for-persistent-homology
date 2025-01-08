@@ -1,0 +1,5 @@
+numpy>=1.20.0
+scipy>=1.6.0
+ripser>=0.6.0
+ray-default
+pytest>=6.2.0
